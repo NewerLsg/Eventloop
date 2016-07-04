@@ -4,7 +4,7 @@ LIBS=-L. -lnw_evtloop
 
 VPATH=.
 
-SRC=nw_evtloop.c main.c
+SRC=nw_evtloop.c main.c nw_list.c
 
 OBJS=$(SRC:.c=.o)
 
@@ -20,10 +20,10 @@ all:$(OUTPUT)
 main:main.o libnw_evtloop.a
 	gcc -g $^ -o $@ -L.  -lnw_evtloop 
 
-libnw_evtloop.so:nw_evtloop.o 
+libnw_evtloop.so:nw_evtloop.o  nw_list.o
 	gcc -fPIC -shared -g $^ -o $@
 
-libnw_evtloop.a:nw_evtloop.o
+libnw_evtloop.a:nw_evtloop.o nw_list.o
 		ar -rcs $@  $^
 
 test:main

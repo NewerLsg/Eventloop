@@ -2,5 +2,5 @@
 
 void myprinf() {	
 	printf("test out");
-
 }
+

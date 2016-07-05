@@ -35,6 +35,7 @@ evtlp_epoll_add(evtqueue *eq, evtobj *ev)
 	struct epoll_event evt;
 	evt.events 	|= ev->events & EVT_READ == EVT_READ ? EPOLLIN : evt.events;
 	evt.events 	|= ev->events & EVT_WRITE == EVT_WRITE ? EPOLLOUT : evt.events;
+	evt.events  |= EPOLLET;
 	evt.data.ptr = ev;
 
 	if (-1 == epoll_ctl(eq->fd, EPOLL_CTL_ADD, ev->fd, &evt)) {
@@ -91,11 +92,11 @@ evtlp_epoll_run(evtqueue* eq, int timeout)
 		for(; i< nfds; i++) {
 			evtobj *ev = (evtobj *)(events[i].data.ptr);
 			if (events[i].events & EPOLLIN) {
-				ev->whandler(ev->fd);
+				ev->rhandler(ev->fd);
 			}
 
 			if (events[i].events & EPOLLOUT) {
-				ev->rhandler(ev->fd);
+				ev->whandler(ev->fd);
 			}
  		}
 	}

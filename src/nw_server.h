@@ -7,4 +7,8 @@ int server_rhandle(int fd, void *data);
 
 //int server_whandle(int fd, void *data);
 
+int client_rhandle(int fd, void *data);
+
+int client_whandle(int fd, void *data);
+
 #endif

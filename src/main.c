@@ -23,7 +23,7 @@ void myhandler(int fd, void *data) {
 
 int
 main() {
-	printf("123");
+	printf("123\n");
 	evtqueue *eq = eventloop_init(10);
 
 	if (eq == NULL) {
@@ -31,7 +31,7 @@ main() {
 		return;
 	}
 
-	printf("34");
+	printf("34\n");
 	int sock = server_init(NULL, 50001);
 
 	if (sock <= 0) return 0;
@@ -45,7 +45,7 @@ main() {
 	set_read_mask(ev->events);
 
 	eventloop_add(ev);
-	printf("123");
+	printf("123\n");
 	eventloop_run(10);
 
 	printf("test done\n");

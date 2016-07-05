@@ -1,4 +1,5 @@
 #include "nw_server.h"
+#include "nw_eventloop.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -51,6 +52,35 @@ server_rhandle(int fd, void *data)
 	socklen_t len;
 
 	int csock = accept(fd, (struct sockaddr *)&addr, &len);
+
+	//printf("client:[%s]",inet_ntoa(inet_addr(addr)));
 	
+	 evtobj *ev = event_create(csock, EVT_READ, client_rhandle, NULL);
+
+	 if (ev == NULL) {
+		return -1;
+	 }
+
+	 eventloop_add(ev);
+ 		 
 	return csock;
 }
+
+
+int client_rhandle(int fd, void *data) {
+	char buff[1024];		
+	int len;
+	do{
+		len = read(fd, buff, sizeof(buff));
+		if (len <= 0) {
+			break;
+		}
+		printf("data:%s\n",buff);
+	}while(1);
+	return 0;
+}
+
+
+int client_whandle(int fd, void *data) {
+	return 0;	
+} 

@@ -7,8 +7,18 @@
 #include <arpa/inet.h>
 #include "nw_eventloop.h"
 
-void rhandler(int i) {
-	printf("0");
+void rhandler(int fd) {
+	char buf[2014];
+	int n;
+
+	if((n = read(fd, buf, sizeof(buf))) < 0) {
+		printf("fail to read.err[%s]", strerror(errno));
+		return;
+	}
+
+	printf("data[%s]\n", buf);
+
+	return;
 }
 
 int setnonblock(int fd) {
@@ -50,6 +60,7 @@ int init_server() {
 
 	return sock;
 }
+
 
 int
 main() {

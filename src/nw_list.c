@@ -1,5 +1,20 @@
 #include "nw_list.h"
 
+listnode *
+list_find(listhead head, void *ptr) {
+	if (head == NULL || ptr == NULL) {
+		return NULL;
+	}
+
+	listhead tmp = head;
+	while(tmp) {
+		if (tmp->ptr == ptr) {
+			break;
+		}
+	}
+	return tmp;
+}
+
 void 
 list_remove(listhead *head, listnode *node) {
 	if (*head == NULL || node == NULL) return ;
@@ -14,6 +29,17 @@ list_remove(listhead *head, listnode *node) {
 	while(tmp && tmp->next != node) list_next(node);
 
 	if (tmp != NULL) tmp ->next = node->next;
+}
+
+void 
+list_destroy(listhead *head) {
+	listhead tmphead = *head;
+	while(tmphead) {
+		listnode  *tmpnode = tmphead;
+		tmphead = tmphead->next;
+		free(tmpnode);
+	}	
+	head = NULL;
 }
 
 void 

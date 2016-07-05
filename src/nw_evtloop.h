@@ -20,8 +20,8 @@
 typedef struct evtobj{
 	int fd;
 	int events;	
-	void (*whandler)(int fd);
-	void (*rhandler)(int fd);
+	void (*whandler)(int fd, void *data);
+	void (*rhandler)(int fd, void *data);
 }evtobj;
 
 typedef struct _evtqueue {

@@ -7,16 +7,37 @@
 #include <arpa/inet.h>
 #include "nw_eventloop.h"
 
-void rhandler(int fd) {
-	char buf[2014];
-	int n;
+void crhandler(int fd, void *data) {
+	char buf[128];
+	int size;
 
-	if((n = read(fd, buf, sizeof(buf))) < 0) {
-		printf("fail to read.err[%s]", strerror(errno));
-		return;
+	if ((size = read(fd, buf, sizeof(buf))) < 0) {
+		printf("fail to read.error[%s]\n", strerror(errno));
+		return ;
 	}
 
 	printf("data[%s]\n", buf);
+	return;
+}
+
+void rhandler(int fd, void *data) {
+	char buf[2014];
+	int csock = accept(fd, NULL, NULL);
+
+	if (csock < 0) {
+		printf("fail to accept client.err[%s]\n", strerror(errno));
+		return ;
+	}
+
+	evtqueue *eq = (evtqueue *)data;
+
+	evtobj *ev = (evtobj *)malloc(sizeof(evtobj));
+	ev->fd = csock;
+	ev->rhandler = rhandler;
+
+	set_read_mask(ev->events);
+
+	eventloop_add(ev);
 
 	return;
 }

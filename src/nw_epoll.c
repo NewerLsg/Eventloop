@@ -92,11 +92,11 @@ evtlp_epoll_run(evtqueue* eq, int timeout)
 		for(; i< nfds; i++) {
 			evtobj *ev = (evtobj *)(events[i].data.ptr);
 			if (events[i].events & EPOLLIN) {
-				ev->rhandler(ev->fd);
+				ev->rhandler(ev->fd, eq);
 			}
 
 			if (events[i].events & EPOLLOUT) {
-				ev->whandler(ev->fd);
+				ev->whandler(ev->fd, eq);
 			}
  		}
 	}

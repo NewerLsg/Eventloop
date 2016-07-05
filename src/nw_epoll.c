@@ -51,7 +51,7 @@ evtlp_epoll_add(evtqueue *eq, evtobj *ev)
 	eq->freesize--;
 	list_insert(eq->evtlist, node);
 
-	printf("add event.\n");
+	printf("[%s]add event.\n", __FUNCTION__);
 	return 0;
 }
 
@@ -77,28 +77,32 @@ evtlp_epoll_run(evtqueue* eq, int timeout)
 {
 	if (eq == NULL) return -1;
 
-	struct epoll_event *events = (struct epoll_event *) malloc(sizeof(struct epoll_event) * eq->maxsize / 2);
-
 	while(1) { 
+		struct epoll_event *events = (struct epoll_event *) malloc(sizeof(struct epoll_event) * eq->maxsize / 2);
 		int nfds = epoll_wait(eq->fd, events, eq->maxsize / 2, timeout * 1000);
 
 		if (nfds < 0) {
 			continue;
 		}
 
-		printf("%d events happen.\n", nfds);
+		printf("[%s]%d events happen.\n",  __FUNCTION__, nfds);
 
 		int i = 0;
 		for(; i< nfds; i++) {
+			printf("[%s]get ptr[%d]\n", __FUNCTION__,i);
 			evtobj *ev = (evtobj *)(events[i].data.ptr);
+			printf("[%s]ev[%p]\n",  __FUNCTION__, ev);
+			printf("[%s]rhandler:[%p]\n", __FUNCTION__, ev->rhandler);
 			if (events[i].events & EPOLLIN) {
-				ev->rhandler(ev->fd, eq);
+				ev->rhandler(ev->fd, NULL);
 			}
-
+			printf("adf");
 			if (events[i].events & EPOLLOUT) {
 				ev->whandler(ev->fd, eq);
 			}
  		}
+
+		free(events);
 	}
 
 	return 0;

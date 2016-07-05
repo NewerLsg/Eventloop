@@ -7,7 +7,21 @@
 #include <arpa/inet.h>
 #include "nw_eventloop.h"
 
-void crhandler(int fd, void *data) {
+int setnonblock(int fd) {
+   int fdflags;
+
+   if ((fdflags = fcntl(fd, F_GETFL, 0)) == -1)
+      return -1;
+   fdflags |= O_NONBLOCK;
+   if (fcntl(fd, F_SETFL, fdflags) == -1)
+      return -1;
+   return 0;
+}
+
+void myhandler(int fd, void *data) {
+	printf("get data\n");
+	return ;
+	/*
 	char buf[128];
 	int size;
 
@@ -18,6 +32,7 @@ void crhandler(int fd, void *data) {
 
 	printf("data[%s]\n", buf);
 	return;
+	*/
 }
 
 void rhandler(int fd, void *data) {
@@ -28,29 +43,24 @@ void rhandler(int fd, void *data) {
 		printf("fail to accept client.err[%s]\n", strerror(errno));
 		return ;
 	}
-
+	
+	printf("%s:fd[%d]", __FUNCTION__, csock);
+	setnonblock(csock);
 	evtqueue *eq = (evtqueue *)data;
 
 	evtobj *ev = (evtobj *)malloc(sizeof(evtobj));
 	ev->fd = csock;
-	ev->rhandler = rhandler;
+	ev->rhandler = myhandler;
+
+	ev->rhandler(csock,NULL);
+
+	printf("[%s]ev[%p],rhandler:[%p]\n",__FUNCTION__, ev, ev->rhandler);
 
 	set_read_mask(ev->events);
 
 	eventloop_add(ev);
-
+	printf("add new client.");
 	return;
-}
-
-int setnonblock(int fd) {
-   int fdflags;
-
-   if ((fdflags = fcntl(fd, F_GETFL, 0)) == -1)
-      return -1;
-   fdflags |= O_NONBLOCK;
-   if (fcntl(fd, F_SETFL, fdflags) == -1)
-      return -1;
-   return 0;
 }
 
 int init_server() {
@@ -99,6 +109,8 @@ main() {
 	evtobj *ev = (evtobj *)malloc(sizeof(evtobj));
 	ev->fd = sock;
 	ev->rhandler = rhandler;
+
+	printf("list socke handle[%p]\n",ev->rhandler);
 
 	set_read_mask(ev->events);
 

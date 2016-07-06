@@ -1,10 +1,9 @@
 #include "nw_list.h"
 
 listnode *
-list_find(listhead head, void *ptr) {
-	if (head == NULL || ptr == NULL) {
-		return NULL;
-	}
+list_find(listhead head, void *ptr) 
+{
+	if (head == NULL || ptr == NULL) return NULL;
 
 	listhead tmp = head;
 	while(tmp) {
@@ -12,11 +11,13 @@ list_find(listhead head, void *ptr) {
 			break;
 		}
 	}
+
 	return tmp;
 }
 
 void 
-list_remove(listhead *head, listnode *node) {
+list_remove(listhead *head, listnode *node) 
+{
 	if (*head == NULL || node == NULL) return ;
 
 	if (node == *head) {
@@ -28,17 +29,19 @@ list_remove(listhead *head, listnode *node) {
 
 	while(tmp && tmp->next != node) list_next(node);
 
-	if (tmp != NULL) tmp ->next = node->next;
+	if (tmp != NULL) tmp->next = node->next;
 }
 
 void 
-list_destroy(listhead *head) {
+list_destroy(listhead *head) 
+{
 	listhead tmphead = *head;
 	while(tmphead) {
 		listnode  *tmpnode = tmphead;
 		tmphead = tmphead->next;
 		free(tmpnode);
 	}	
+	
 	head = NULL;
 }
 

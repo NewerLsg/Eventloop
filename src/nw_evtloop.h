@@ -8,21 +8,22 @@
 #define EVT_READ 	0x001
 #define EVT_WRITE 	0x010
 
+#define reset_rw_mask(events) 	events = 0x00
 #define set_read_mask(events) 	events |=0x001
 #define set_write_mask(events) 	events |=0x010
 
-#define eventloop_init(maxsize)  evtlp->evtlp_init(evtlp,maxsize)
-#define eventloop_add(ev)  evtlp->evtlp_add(evtlp, ev)
-#define eventloop_remove(ev)  evtlp->evtlp_remove(evtlp, ev)
-#define eventloop_run(timeout) evtlp->evtlp_run(evtlp, timeout)
-#define eventloop_destroy() evtlp->evtlp_destroy(evtlp)
+#define eventloop_init(maxsize)	evtlp->evtlp_init(evtlp,maxsize)
+#define eventloop_add(ev)  		evtlp->evtlp_add(evtlp, ev)
+#define eventloop_remove(ev)	evtlp->evtlp_remove(evtlp, ev)
+#define eventloop_run(timeout)	evtlp->evtlp_run(evtlp, timeout)
+#define eventloop_destroy()		evtlp->evtlp_destroy(evtlp)
 
-typedef struct evtobj{
+typedef struct evtobj {
 	int fd;
 	int events;	
 	void (*whandler)(int fd, void *data);
 	void (*rhandler)(int fd, void *data);
-}evtobj;
+} evtobj;
 
 typedef struct _evtqueue {
 	int fd;
@@ -34,6 +35,6 @@ typedef struct _evtqueue {
 	int (*evtlp_remove)(struct _evtqueue *, evtobj *);
 	int (*evtlp_run)(struct _evtqueue*, int );
 	void (*evtlp_destroy)(struct _evtqueue* );
-}evtqueue;
+} evtqueue;
 
 #endif// end of NW_EVTLOOP

@@ -21,7 +21,6 @@ evtqueue
 	eq->fd = fd; 
 	eq->freesize = eq->maxsize = maxsize;
 	eq->evtlist	= NULL;
-	printf("loop init done.fd[%d], maxsize[%d]\n", eq->fd, eq->freesize);
 	return eq;
 }
 
@@ -51,7 +50,6 @@ evtlp_epoll_add(evtqueue *eq, evtobj *ev)
 	eq->freesize--;
 	list_insert(eq->evtlist, node);
 
-	printf("[%s]add event.\n", __FUNCTION__);
 	return 0;
 }
 
@@ -85,13 +83,11 @@ evtlp_epoll_run(evtqueue* eq, int timeout)
 			continue;
 		}
 
-		printf("[%s]%d events happen.\n",  __FUNCTION__, nfds);
-
 		int i = 0;
 		for(; i< nfds; i++) {
 			evtobj *ev = (evtobj *)(events[i].data.ptr);
 			if ((events[i].events & EPOLLIN) && ev->rhandler != NULL) {
-				ev->rhandler(ev->fd, NULL);
+				ev->rhandler(ev->fd, eq);
 			}
 
 			if ((events[i].events & EPOLLOUT) && ev->whandler != NULL) {

@@ -42,7 +42,6 @@ void rhandler(int fd, void *data) {
 	
 	printf("%s:fd[%d]", __FUNCTION__, csock);
 	setnonblock(csock);
-	//evtqueue *eq = (evtqueue *)data;
 
 	evtobj *ev = (evtobj *)malloc(sizeof(evtobj));
 	ev->fd = csock;
@@ -51,13 +50,9 @@ void rhandler(int fd, void *data) {
 	ev->events = 0;
 	ev->rhandler(csock,NULL);
 
-	printf("[%s]ev[%p],rhandler:[%p]\n",__FUNCTION__, ev, ev->rhandler);
-	
-	
 	set_read_mask(ev->events);
 
 	eventloop_add(ev);
-	printf("add new client.");
 	return;
 }
 
@@ -89,7 +84,6 @@ int init_server() {
 	return sock;
 }
 
-
 int
 main() {
 	evtqueue *eq = eventloop_init(10);
@@ -108,7 +102,6 @@ main() {
 	ev->rhandler = rhandler;
 	ev->whandler = NULL;
 
-	printf("list socke handle[%p]\n",ev->rhandler);
 	ev->events = 0;
 	set_read_mask(ev->events);
 

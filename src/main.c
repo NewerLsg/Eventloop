@@ -19,9 +19,6 @@ int setnonblock(int fd) {
 }
 
 void myhandler(int fd, void *data) {
-	printf("get data\n");
-	return ;
-	/*
 	char buf[128];
 	int size;
 
@@ -32,7 +29,6 @@ void myhandler(int fd, void *data) {
 
 	printf("data[%s]\n", buf);
 	return;
-	*/
 }
 
 void rhandler(int fd, void *data) {
@@ -46,16 +42,18 @@ void rhandler(int fd, void *data) {
 	
 	printf("%s:fd[%d]", __FUNCTION__, csock);
 	setnonblock(csock);
-	evtqueue *eq = (evtqueue *)data;
+	//evtqueue *eq = (evtqueue *)data;
 
 	evtobj *ev = (evtobj *)malloc(sizeof(evtobj));
 	ev->fd = csock;
 	ev->rhandler = myhandler;
-
+	ev->whandler = NULL;
+	ev->events = 0;
 	ev->rhandler(csock,NULL);
 
 	printf("[%s]ev[%p],rhandler:[%p]\n",__FUNCTION__, ev, ev->rhandler);
-
+	
+	
 	set_read_mask(ev->events);
 
 	eventloop_add(ev);
@@ -75,7 +73,6 @@ int init_server() {
 	 add.sin_family = AF_INET;
 	 add.sin_port = htonl(10001);
 	 add.sin_addr.s_addr = INADDR_ANY;
-	 bzero(&(add.sin_zero), 8);
 
 	 if (bind(sock, (struct sockaddr *)&add, sizeof(struct sockaddr)) != 0) {
 	 	printf("bind fail.err[%s]\n", strerror(errno));
@@ -109,9 +106,10 @@ main() {
 	evtobj *ev = (evtobj *)malloc(sizeof(evtobj));
 	ev->fd = sock;
 	ev->rhandler = rhandler;
+	ev->whandler = NULL;
 
 	printf("list socke handle[%p]\n",ev->rhandler);
-
+	ev->events = 0;
 	set_read_mask(ev->events);
 
 	eventloop_add(ev);

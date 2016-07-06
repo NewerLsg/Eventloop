@@ -89,15 +89,12 @@ evtlp_epoll_run(evtqueue* eq, int timeout)
 
 		int i = 0;
 		for(; i< nfds; i++) {
-			printf("[%s]get ptr[%d]\n", __FUNCTION__,i);
 			evtobj *ev = (evtobj *)(events[i].data.ptr);
-			printf("[%s]ev[%p]\n",  __FUNCTION__, ev);
-			printf("[%s]rhandler:[%p]\n", __FUNCTION__, ev->rhandler);
-			if (events[i].events & EPOLLIN) {
+			if ((events[i].events & EPOLLIN) && ev->rhandler != NULL) {
 				ev->rhandler(ev->fd, NULL);
 			}
-			printf("adf");
-			if (events[i].events & EPOLLOUT) {
+
+			if ((events[i].events & EPOLLOUT) && ev->whandler != NULL) {
 				ev->whandler(ev->fd, eq);
 			}
  		}

@@ -1,9 +1,6 @@
 #ifndef NW_LIST
 #define NW_LIST
 
-#include<stdlib.h>
-#include<stdio.h>
-
 //链表操作
 #define list_init(head) 			\
 	head = NULL						\

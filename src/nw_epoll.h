@@ -1,19 +1,18 @@
 #ifndef NW_EPOLL
 #define NW_EPOLL
 
-#include "nw_evtloop.h"
-#include <sys/epoll.h>
+#include "nw_event.h"
 
-extern evtqueue evt_epoll_ojb;
+extern evtqueue evtqueue_obj;
 
-evtqueue *evtlp_epoll_init(evtqueue *eq, int maxsize);
+evtqueue *evt_epoll_init(evtqueue *eq, int maxsize);
 
-int evtlp_epoll_add(evtqueue *eq, evtobj *ev);
+int evt_epoll_add(evtqueue *eq, evtobj *ev);
 
-int evtlp_epoll_remove(evtqueue *eq, evtobj *ev);
+int evt_epoll_remove(evtqueue *eq, evtobj *ev);
 
-int evtlp_epoll_run(evtqueue* eq, int timeout);
+int evt_epoll_run(evtqueue* eq, int timeout);
 
-void evtlp_epoll_reset(evtqueue* eq);
+void evt_epoll_destroy(evtqueue* eq);
 
 #endif

@@ -1,17 +1,27 @@
 #include "nw_epoll.h"
 
-evtqueue evt_epoll_ojb = {
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/epoll.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+
+evtqueue evtqueue_obj = {
 	-1, 0, 0,
 	NULL,
-	evtlp_epoll_init,
-	evtlp_epoll_add,
-	evtlp_epoll_remove,
-	evtlp_epoll_run,
-	evtlp_epoll_reset
+	evt_epoll_init,
+	evt_epoll_add,
+	evt_epoll_remove,
+	evt_epoll_run,
+	evt_epoll_destroy
 };
 
 evtqueue 
-*evtlp_epoll_init(evtqueue *eq, int maxsize) 
+*evt_epoll_init(evtqueue *eq, int maxsize) 
 {
 	int fd;
 	if ((fd = epoll_create(maxsize)) <= 0) {
@@ -25,7 +35,7 @@ evtqueue
 }
 
 int 
-evtlp_epoll_add(evtqueue *eq, evtobj *ev) 
+evt_epoll_add(evtqueue *eq, evtobj *ev) 
 {
 	if (eq == NULL || ev == NULL) return 0;
 
@@ -54,7 +64,7 @@ evtlp_epoll_add(evtqueue *eq, evtobj *ev)
 }
 
 int 
-evtlp_epoll_remove(evtqueue *eq, evtobj *ev) 
+evt_epoll_remove(evtqueue *eq, evtobj *ev) 
 {
 	if (eq == NULL || ev == NULL) return 0;
 
@@ -71,7 +81,7 @@ evtlp_epoll_remove(evtqueue *eq, evtobj *ev)
 }
 
 int  
-evtlp_epoll_run(evtqueue* eq, int timeout)
+evt_epoll_run(evtqueue* eq, int timeout)
 {
 	if (eq == NULL) return -1;
 
@@ -102,7 +112,7 @@ evtlp_epoll_run(evtqueue* eq, int timeout)
 }
 
 void 
-evtlp_epoll_reset(evtqueue* eq) {
+evt_epoll_destroy(evtqueue* eq) {
 	if (eq == NULL) return;
 	close(eq->fd);
 	eq->fd = -1;

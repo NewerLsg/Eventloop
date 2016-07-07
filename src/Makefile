@@ -4,27 +4,27 @@ LIBS=-L. -lnw_evtloop
 
 VPATH=.
 
-SRC=nw_evtloop.c main.c nw_list.c nw_epoll.c
+SRC=nw_list.c nw_epoll.c nw_server.c nw_util.c nw_event.c
 
 OBJS=$(SRC:.c=.o)
 
-OUTPUT=main libnw_evtloop.so libnw_evtloop.a
+OUTPUT=libnw_evtloop.so libnw_evtloop.a main
 
 all:$(OUTPUT)
 		
-.SUFFIXES:.o .c .so .a
+main:main.o 
+	gcc -g $^ -o $@ -L.  -lnw_evtloop 
 
+libnw_evtloop.so:$(OBJS)
+	gcc -fPIC -shared -g $^ -o $@
+
+libnw_evtloop.a:$(OBJS)
+		ar -rcs $@  $^
+
+.SUFFIXES:.o .c .so .a
 .c.o:
 	gcc -fPIC $(INC) -g -c $^
 
-main:main.o libnw_evtloop.a
-	gcc -g $^ -o $@ -L.  -lnw_evtloop 
-
-libnw_evtloop.so:nw_list.o nw_epoll.o
-	gcc -fPIC -shared -g $^ -o $@
-
-libnw_evtloop.a:nw_list.o nw_epoll.o
-		ar -rcs $@  $^
 
 test:main
 		./main

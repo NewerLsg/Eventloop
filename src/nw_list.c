@@ -1,5 +1,8 @@
 #include "nw_list.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 listnode *
 list_find(listhead head, void *ptr) 
 {

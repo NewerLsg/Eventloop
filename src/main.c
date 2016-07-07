@@ -3,7 +3,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <errno.h>
+#include <string.h>
 #include "nw_eventloop.h"
+#include <stdio.h>
 
 void myhandler(int fd, void *data) {
 	char buf[128];
@@ -20,6 +23,7 @@ void myhandler(int fd, void *data) {
 
 int
 main() {
+	printf("123");
 	evtqueue *eq = eventloop_init(10);
 
 	if (eq == NULL) {
@@ -27,6 +31,7 @@ main() {
 		return;
 	}
 
+	printf("34");
 	int sock = server_init(NULL, 50001);
 
 	if (sock <= 0) return 0;
@@ -40,7 +45,7 @@ main() {
 	set_read_mask(ev->events);
 
 	eventloop_add(ev);
-
+	printf("123");
 	eventloop_run(10);
 
 	printf("test done\n");

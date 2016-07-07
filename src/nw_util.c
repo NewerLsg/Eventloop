@@ -16,12 +16,12 @@ setnonblock(int fd)
 	int fdflags;
 
 	if ((fdflags = fcntl(fd, F_GETFL, 0)) == -1) {
-		printf("get fd[%d] flag error.\n", fd, strerror(errno));
+		printf("get fd[%d] flag error[%s].\n", fd, strerror(errno));
 		return -1;
 	}
 
 	if (fcntl(fd, F_SETFL, fdflags | O_NONBLOCK) == -1) {
-		printf("set fd[%d] flag error.\n", fd, strerror(errno));
+		printf("set fd[%d] flag error[%s].\n", fd, strerror(errno));
 		return -1;
 	}
 

@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 
 evtqueue *evtlp = &evtqueue_obj;
